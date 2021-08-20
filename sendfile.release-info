@@ -1,7 +1,7 @@
 ;; Release-info for CHICKEN 4
 
-(repo hg "https://bitbucket.org/certainty/{egg-name}")
-(uri targz "https://bitbucket.org/certainty/{egg-name}/get/{egg-release}.tar.gz")
+(repo git "https://github.com/certainty/chicken_sendfile")
+(uri targz "https://github.com/certainty/chicken_sendfile/archive/refs/tags/{egg-release}.tar.gz")
 (uri files-list "http://code.call-cc.org/files-list?egg={egg-name};egg-release={egg-release}" old-uri)
 
 (release "1.6.0" old-uri)
