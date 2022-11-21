@@ -16,8 +16,6 @@
                          "feature-tests/sendfile-macos.c"
                          "feature-tests/sendfile-sun.c"
 
-                         "backward-compatibility.scm"
-                         "backward-compatibility/copy-port.scm"
                          "backward-compatibility/pointer-offset.scm"
 
                          "strategies/mmap.scm"
