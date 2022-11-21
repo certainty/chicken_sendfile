@@ -54,7 +54,6 @@
 
 (foreign-declare "#ifndef _XOPEN_SOURCE\n#define _XOPEN_SOURCE 600\n#endif")
 
-(include "backward-compatibility.scm")
 (include "backward-compatibility/pointer-offset.scm")
 
 (define (kilobytes num)  (* num 1024))
