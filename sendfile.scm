@@ -202,7 +202,7 @@
                 ((negative? new-offset)
                  (complain #t "sendfile failed"))
                 (else
-                 (loop new-offset target-offset)))))))))
+                 (loop (inexact->exact (truncate new-offset)) target-offset)))))))))
   (else
    (define (impl:sendfile . args)
      (complain #f "Sendfile is not available on your system"))))
