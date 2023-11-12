@@ -10,13 +10,10 @@
                         (source-dependencies
                          "feature-tests/madvise.c"
                          "feature-tests/mmap.c"
-                         "feature-tests/posix-fadvise.c"
                          "feature-tests/sendfile-bsd.c"
                          "feature-tests/sendfile-linux.c"
                          "feature-tests/sendfile-macos.c"
                          "feature-tests/sendfile-sun.c"
-
-                         "backward-compatibility/pointer-offset.scm"
 
                          "strategies/mmap.scm"
                          "strategies/rw.scm"

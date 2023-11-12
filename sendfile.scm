@@ -37,24 +37,17 @@
  implementation-selector impl:mmapped impl:sendfile impl:read-write-loop/fd
  impl:read-write-loop/port mmap-available sendfile-available sendfile %current-chunk-size)
 
-(import scheme) ; Hack to get cond-expand in CHICKEN 4
+(import scheme (chicken base) (chicken foreign) (chicken condition)
+        (chicken fixnum) (chicken io) (chicken file posix)
+        (chicken port) (chicken time) (chicken errno) (chicken memory)
+        memory-mapped-files)
 
 (cond-expand
-  (chicken-4
-   (import chicken)
-   (import-for-syntax chicken)
-   (require-library posix lolevel srfi-4 data-structures)
-   (import extras posix srfi-4 foreign lolevel ports (only data-structures alist-ref)))
-
-  (chicken-5
-   (import (chicken base) (chicken foreign) (chicken condition)
-           (chicken fixnum) (chicken io) (chicken file posix)
-           (chicken port) (chicken time) (chicken errno) (chicken memory)
-           memory-mapped-files)))
+  ((or chicken-5.0 chicken-5.1 chicken-5.2)
+   (define current-process-milliseconds current-milliseconds))
+  (else))
 
 (foreign-declare "#ifndef _XOPEN_SOURCE\n#define _XOPEN_SOURCE 600\n#endif")
-
-(include "backward-compatibility/pointer-offset.scm")
 
 (define (kilobytes num)  (* num 1024))
 (define (megabytes num)  (* (kilobytes num) 1024))
@@ -184,16 +177,16 @@
      (let ((write-timeout (write-timeout))
            (wanted-chunk-size (%current-chunk-size)))
        (let loop ((offset offset) (target-offset (+ offset bytes)))
-         (if (= offset  target-offset)
+         (if (= offset target-offset)
              bytes
              (let* ((next-chunk (next-chunk-size offset (+ offset bytes) wanted-chunk-size))
                     (new-offset (%sendfile-implementation src dst offset next-chunk)))
                (cond
-                ((eqv? -2.0 new-offset)   ; EAGAIN/EINTR
+                ((eqv? -2 new-offset)   ; EAGAIN/EINTR
                  (when write-timeout
                    (##sys#thread-block-for-timeout!
                     ##sys#current-thread
-                    (+ (current-milliseconds) write-timeout)))
+                    (+ (current-process-milliseconds) write-timeout)))
                  (##sys#thread-block-for-i/o! ##sys#current-thread dst #:output)
                  (%yield)
                  (when (##sys#slot ##sys#current-thread 13)
@@ -202,7 +195,7 @@
                 ((negative? new-offset)
                  (complain #t "sendfile failed"))
                 (else
-                 (loop (inexact->exact (truncate new-offset)) target-offset)))))))))
+                 (loop new-offset target-offset)))))))))
   (else
    (define (impl:sendfile . args)
      (complain #f "Sendfile is not available on your system"))))

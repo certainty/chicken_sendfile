@@ -14,7 +14,6 @@ feature_flags=""
 
 check_feature madvise madvise
 check_feature mmap mmap
-check_feature posix-fadvise posix-fadvise
 # Avoid false positives by only compiling when CHICKEN agrees that the
 # platform matches.
 if $CHICKEN_CSI -e "(cond-expand ((or netbsd freebsd openbsd) (exit 0)) (else (exit 1)))"; then
