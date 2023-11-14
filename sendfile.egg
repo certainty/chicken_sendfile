@@ -13,11 +13,9 @@
                          "feature-tests/sendfile-bsd.c"
                          "feature-tests/sendfile-linux.c"
                          "feature-tests/sendfile-macos.c"
-                         "feature-tests/sendfile-sun.c"
 
                          "strategies/mmap.scm"
                          "strategies/rw.scm"
                          "strategies/sendfile.bsd.scm"
                          "strategies/sendfile.linux.scm"
-                         "strategies/sendfile.macos.scm"
-                         "strategies/sendfile.solaris.scm"))))
+                         "strategies/sendfile.macos.scm"))))

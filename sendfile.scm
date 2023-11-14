@@ -165,8 +165,6 @@
       (include "strategies/sendfile.bsd.scm"))
      (macosx
       (include "strategies/sendfile.macos.scm"))
-     (sun
-      (include "strategies/sendfile.solaris.scm"))
      (else)))
   (else))
 
