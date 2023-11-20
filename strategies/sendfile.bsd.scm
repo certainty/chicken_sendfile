@@ -5,8 +5,7 @@
 #include <sys/uio.h>")
 
 (define %sendfile-implementation
-  )
-  (foreign-lambda* ssize_t ((integer src) (integer dst) (unsigned-long offset) (unsigned-long to_send))
+  (foreign-lambda* ssize_t ((integer src) (integer dst) (ssize_t offset) (size_t to_send))
     "
     off_t res = 0;
     if(sendfile(src,dst,offset,to_send,NULL,&res,0) < 0) {

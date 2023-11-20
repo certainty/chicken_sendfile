@@ -4,7 +4,7 @@
 #include<errno.h>")
 
 (define %sendfile-implementation
-  (foreign-lambda* ssize_t ((integer src) (integer dst) (unsigned-long offset) (unsigned-long to_send))
+  (foreign-lambda* ssize_t ((integer src) (integer dst) (ssize_t offset) (size_t to_send))
     "
     off_t res = offset;
     if(sendfile(dst,src,&res,to_send) < 0) {
