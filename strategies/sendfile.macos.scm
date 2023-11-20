@@ -7,7 +7,7 @@
 ;; EAGAIN may be signaled even when partial data is sent, but the caller expects EAGAIN
 ;; to mean zero bytes sent, so we return the number of bytes sent when non-zero.
 (define %sendfile-implementation
-  (foreign-lambda* ssize_t ((integer src) (integer dst) (ssize_t offset) (size_t to_send))
+  (foreign-lambda* ssize_t ((integer src) (integer dst) (ssize_t offset) (ssize_t to_send))
     "
     off_t res = to_send;
     if(sendfile(src,dst,offset,&res,NULL,0) < 0) {
