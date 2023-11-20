@@ -14,8 +14,7 @@
     if(sendfile(src,dst,offset,&res,NULL,0) < 0) {
       if(errno == EAGAIN || errno == EINTR) {
         C_return(res == 0 ? -2 : offset + res);
-      }
-      else {
+      }else {
         C_return(-1);
       }
     }
