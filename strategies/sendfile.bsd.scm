@@ -46,7 +46,7 @@
     "size_t res = 0;"
     "off_t tmpoffset = (off_t)offset;"
     "if(sendfile(src,dst,tmpoffset,to_send,NULL,&res,0) < 0){"
-    "  if(errno == EAGAIN){"
+    "  if(errno == EAGAIN || errno == EINTR){"
     "    C_return(res == 0 ? -2 : (double)(tmpoffset + res));"
     "  }else{"
     "    C_return(-1);"
