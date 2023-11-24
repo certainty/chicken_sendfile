@@ -10,7 +10,7 @@
   (foreign-lambda* double ((integer src) (integer dst) (double offset) (unsigned-integer to_send))
     "off_t res = (off_t)to_send;"
     "if(sendfile(src,dst,(off_t)offset,&res,NULL/*&hdtr*/,0) < 0){"
-    "  if(errno == EAGAIN)"
+    "  if(errno == EAGAIN || errno == EINTR)"
     "    C_return(res == 0 ? -2 : (double)(offset + res));"
     "  else C_return(-1);"
     "}"
