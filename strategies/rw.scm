@@ -72,7 +72,7 @@
                                 (when write-timeout
                                   (##sys#thread-block-for-timeout!
                                    ##sys#current-thread
-                                   (+ (current-milliseconds) write-timeout)))
+                                   (+ (current-process-milliseconds) write-timeout)))
                                 (##sys#thread-block-for-i/o! ##sys#current-thread dst #:output)
                                 (%yield)
                                 (when (##sys#slot ##sys#current-thread 13)

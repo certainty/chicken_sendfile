@@ -54,7 +54,7 @@
                  (mem-file   (map-file-to-memory #f chunk-size prot/read map/shared src (or mmap-offset offset)))
                  (pointer    (memory-mapped-file-pointer mem-file)))
             (if ptr-offset
-                (proc (pointer-inc pointer ptr-offset) chunk-size write-timeout)
+                (proc (pointer+ pointer ptr-offset) chunk-size write-timeout)
                 (proc pointer chunk-size write-timeout))
             (unmap-file-from-memory mem-file)
             (loop (+ offset chunk-size) (+ bytes-written chunk-size) #f #f))))))
@@ -63,7 +63,7 @@
   ;;don't bother advices for data smaller than 64k
   (when (>= size (kilobytes 64)) (%madvise ptr size %madvise-will-need))
   ;(printf "Shall writ: ~A bytes starting at: ~A" size ptr )
-  (let loop ((bytes-left size) (work-ptr (pointer-inc ptr 0)))
+  (let loop ((bytes-left size) (work-ptr (pointer+ ptr 0)))
     (if (zero? bytes-left)
         #t
         (let ((result (sys:write dst work-ptr bytes-left)))
@@ -72,7 +72,7 @@
             (when write-timeout
               (##sys#thread-block-for-timeout!
                ##sys#current-thread
-               (+ (current-milliseconds) write-timeout)))
+               (+ (current-process-milliseconds) write-timeout)))
             (##sys#thread-block-for-i/o! ##sys#current-thread dst #:output)
             (%yield)
             (when (##sys#slot ##sys#current-thread 13)
@@ -81,4 +81,4 @@
            ((negative? result)
             (complain #f "write failed"))
            (else
-            (loop (- bytes-left result) (pointer-inc work-ptr result))))))))
+            (loop (- bytes-left result) (pointer+ work-ptr result))))))))
