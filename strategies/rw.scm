@@ -9,17 +9,17 @@
     (port-seek src offset))
 
   (let* ((buffsize (read-write-buffer-size))
-         (buffer   (make-string buffsize)))
+         (buffer   (make-bytevector buffsize)))
     (let loop ((bytes-left bytes)
                (bytes-read 0))
       (if (and bytes-left (not (positive? bytes-left)))
           bytes-read
           (let* ((to-read    (fxmin buffsize (if bytes-left (inexact->exact bytes-left) buffsize)))
-                 (read-bytes (read-string! to-read buffer src)))
+                 (read-bytes (read-bytevector! buffer src 0 to-read)))
             (if (= 0 read-bytes)
                 bytes-read
                 (begin
-                  (write-string buffer read-bytes dst)
+                  (write-bytevector buffer dst 0 read-bytes)
                   (loop (and bytes-left (- bytes-left read-bytes))
                         (+ bytes-read read-bytes))))))))
   bytes)
@@ -37,7 +37,7 @@
   (set!  *last-selected-implementation* 'read-write-loop)
 
   (let* ((buffsize (read-write-buffer-size))
-         (buffer   (make-string buffsize))
+         (buffer   (make-bytevector buffsize))
          (seek (foreign-lambda int "lseek" integer integer int)))
 
     (when (positive? offset)
@@ -48,7 +48,7 @@
           bytes-read
           (let* ((to-read    (fxmin buffsize (inexact->exact bytes-left))) ;; is that ok? doesn't that possibly overflow?
                  (read-bytes (cadr (file-read src to-read buffer))))
-            (write-string buffer read-bytes dst)
+            (write-bytevector buffer dst 0 read-bytes)
             (loop (- bytes-left read-bytes) (+ bytes-read read-bytes)))))))
 
 
@@ -58,9 +58,9 @@
   (set!  *last-selected-implementation* 'read-write-loop)
 
   (let* ((buffsize (read-write-buffer-size))
-         (buffer (make-string buffsize))
+         (buffer (make-bytevector buffsize))
          (write-timeout (write-timeout))
-         (write/offset (foreign-lambda* int ((int dst) (nonnull-scheme-pointer buff) (unsigned-integer write_offset) (unsigned-integer bytes))
+         (write/offset (foreign-lambda* int ((int dst) (bytevector buff) (unsigned-integer write_offset) (unsigned-integer bytes))
                          "C_return(write(dst,buff + write_offset,bytes));"))
          (write-bytes (lambda (size)
                         (let loop ((bytes-left size) (write_offset 0))

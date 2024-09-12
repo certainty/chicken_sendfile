@@ -37,15 +37,10 @@
  implementation-selector impl:mmapped impl:sendfile impl:read-write-loop/fd
  impl:read-write-loop/port mmap-available sendfile-available sendfile %current-chunk-size)
 
-(import scheme (chicken base) (chicken foreign) (chicken condition)
+(import scheme (scheme base) (chicken base) (chicken foreign) (chicken condition)
         (chicken fixnum) (chicken io) (chicken file posix)
         (chicken port) (chicken time) (chicken errno) (chicken memory)
         memory-mapped-files)
-
-(cond-expand
-  ((or chicken-5.0 chicken-5.1 chicken-5.2)
-   (define current-process-milliseconds current-milliseconds))
-  (else))
 
 (foreign-declare "#ifndef _XOPEN_SOURCE\n#define _XOPEN_SOURCE 600\n#endif")
 

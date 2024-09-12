@@ -2,7 +2,9 @@
 ;; %%HEADER%%
 ;;
 
-(import test sendfile)
+(cond-expand
+  (chicken-5 (import test sendfile))
+  (else (import (scheme base) test sendfile)))
 
 (load "test-helper")
 
